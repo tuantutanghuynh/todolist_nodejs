@@ -10,3 +10,69 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ============================================
+// MODEL: User
+// ============================================
+model User {
+  id        Int        @id @default(autoincrement())
+  name      String
+  email     String     @unique
+  password  String
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+
+  // Relationships
+  todos      Todo[]
+  categories Category[]
+
+  @@map("users")
+}
+
+// ============================================
+// MODEL: Category
+// ============================================
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String
+  color     String   @default("#3B82F6")
+  icon      String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Foreign key
+  userId    Int      @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Relationships
+  todos     Todo[]
+
+  // Unique: tên category không trùng trong cùng user
+  @@unique([userId, name])
+  @@map("categories")
+}
+
+// ============================================
+// MODEL: Todo
+// ============================================
+model Todo {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String?
+  priority    Int       @default(2)  // 1=low, 2=medium, 3=high
+  dueDate     DateTime? @map("due_date")
+  isCompleted Boolean   @default(false) @map("is_completed")
+  completedAt DateTime? @map("completed_at")
+  deletedAt   DateTime? @map("deleted_at")  // Soft delete
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  // Foreign keys
+  userId     Int       @map("user_id")
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  categoryId Int?      @map("category_id")
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  @@map("todos")
+
+}
