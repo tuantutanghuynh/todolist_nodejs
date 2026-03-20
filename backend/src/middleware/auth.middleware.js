@@ -14,7 +14,7 @@ export const authenticate = (req, res, next) => {
   //step 3: verify token
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = { id: decoded.userId };
+    req.user = { userId: decoded.userId };
     next();
   } catch (error) {
     //token expired

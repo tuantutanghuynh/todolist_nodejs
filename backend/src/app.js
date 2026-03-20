@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import authRoutes from "./routes/auth.routes.js";
 
 //Load env variables from .env file
 dotenv.config();
@@ -26,7 +27,7 @@ app.use(
 );
 
 //ROUTES
-//add later
+app.use("/api/auth", authRoutes);
 
 //Health check route
 app.get("/api/health", (req, res) => {
