@@ -45,7 +45,7 @@ export const register = async (req, res, next) => {
     //step 6: generate JWT token
     const token = generateToken(user.id);
 
-    //step 7: trả về response thành công
+    //step 7: return success response
     res.status(201).json({
       message: "User registered successfully",
       token,
